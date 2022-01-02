@@ -1,7 +1,7 @@
-from typing import overload
 from ursina import *
 from ursina.prefabs.first_person_controller import FirstPersonController
 from mesh_terrain import MeshTerrain
+from flake import Flake
 
 app = Ursina()
 
@@ -14,6 +14,10 @@ subject.cursor.visible=False
 window.fullscreen=False
 
 terrain = MeshTerrain()
+flakes = []
+for i in range(512):
+    e = Flake(subject.position)
+    flakes.append(e)
 
 pX = subject.x
 pZ = subject.z
@@ -24,6 +28,9 @@ def input(key):
 count = 0
 def update():
     global count, pX, pZ
+
+    for i in range(512):
+        flakes[i].physics(subject.position)
 
     # Generate terrain at current swirl position.
     terrain.genTerrain()

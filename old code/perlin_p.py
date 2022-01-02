@@ -4,15 +4,15 @@
 from perlin_noise_module import PerlinNoise
 
 class Perlin:
-    def __init__(this):
+    def __init__(self):
 
-        this.octaves = 3
-        this.seed = 123
-        this.freq = 64
-        this.amp = 12
-        this.pNoise = PerlinNoise(  octaves=this.octaves,
-                                    seed=this.seed)
+        self.octaves = 3
+        self.seed = 123
+        self.freq = 64
+        self.amp = 12
+        self.pNoise = PerlinNoise(  octaves=self.octaves,
+                                    seed=self.seed)
 
-    def getHeight(this, x, z):
-        y = this.pNoise([x/this.freq, z/this.freq]) * this.amp
+    def getHeight(self, x, z):
+        y = self.pNoise([x/self.freq, z/self.freq]) * self.amp
         return y

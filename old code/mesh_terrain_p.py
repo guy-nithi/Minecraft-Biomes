@@ -3,57 +3,57 @@ from ursina import *
 from perlin import Perlin
 
 class MeshTerrain:
-    def __init__(this):
+    def __init__(self):
         
-        this.block = load_model('block.obj')
-        this.textureAtlas = 'texture_atlas_3.png'
+        self.block = load_model('block.obj')
+        self.textureAtlas = 'texture_atlas_3.png'
 
-        this.subsets = []
-        this.numSubsets = 1
-        this.subWidth = 128
+        self.subsets = []
+        self.numSubsets = 1
+        self.subWidth = 128
 
-        this.td = {}
+        self.td = {}
 
-        this.perlin = Perlin()
+        self.perlin = Perlin()
 
-        for i in range(0,this.numSubsets):
+        for i in range(0,self.numSubsets):
             e = Entity( model=Mesh(),
-                        texture=this.textureAtlas)
+                        texture=self.textureAtlas)
             e.texture_scale*=64/e.texture.width
-            this.subsets.append(e)
+            self.subsets.append(e)
         
 
-    def genBlock(this,x,y,z):
+    def genBlock(self,x,y,z):
         # Extend or add to the vertices of our model.
-        model = this.subsets[0].model
+        model = self.subsets[0].model
 
         model.vertices.extend([ Vec3(x,y,z) + v for v in 
-                                this.block.vertices])
+                                self.block.vertices])
 
-        this.td['x'+str(floor(x))+
+        self.td['x'+str(floor(x))+
                 'y'+str(floor(y))+
                 'z'+str(floor(z))] = 't'
 
-        # This is the texture atlas co-ord for grass :)
+        # self is the texture atlas co-ord for grass :)
         uu = 8
         uv = 7
         # Snow? High enough?
         if y > 2:
             uu = 8
             uv = 6
-        model.uvs.extend([Vec2(uu,uv) + u for u in this.block.uvs])
+        model.uvs.extend([Vec2(uu,uv) + u for u in self.block.uvs])
 
 
-    def genTerrain(this):
+    def genTerrain(self):
         x = 0
         z = 0
-        d = int(this.subWidth*0.5)
+        d = int(self.subWidth*0.5)
 
         for k in range(-d,d):
             for j in range(-d,d):
 
                 # y = randrange(-1,1)
-                y = floor(this.perlin.getHeight(x+k,z+j))
-                this.genBlock(x+k,y,z+j)
+                y = floor(self.perlin.getHeight(x+k,z+j))
+                self.genBlock(x+k,y,z+j)
 
-        this.subsets[0].model.generate()
+        self.subsets[0].model.generate()

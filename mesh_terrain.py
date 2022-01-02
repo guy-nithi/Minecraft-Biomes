@@ -6,49 +6,49 @@ from swirl_engine import SwirlEngine
 from mining_system import *
 
 class MeshTerrain:
-    def __init__(this):
+    def __init__(self):
 
-        this.block = load_model('block.obj')
-        this.textureAtlas = 'texture_atlas_3.png'
-        this.numVertices = len(this.block.vertices)
+        self.block = load_model('block.obj')
+        self.textureAtlas = 'texture_atlas_3.png'
+        self.numVertices = len(self.block.vertices)
         
-        this.subsets = []
-        this.numSubsets = 128
+        self.subsets = []
+        self.numSubsets = 128
 
         # Must be even number! See genTerrain()
-        this.subWidth = 4
-        this.swirlEngine = SwirlEngine(this.subWidth)
-        this.currentSubset = 0
+        self.subWidth = 4
+        self.swirlEngine = SwirlEngine(self.subWidth)
+        self.currentSubset = 0
 
         # Our terrain dicionary :D
-        this.td = {}
+        self.td = {}
 
         # Our vertex dictionary -- for mining
-        this.vd = {}
+        self.vd = {}
 
-        this.perlin = Perlin()
+        self.perlin = Perlin()
 
-        for i in range(0,this.numSubsets):
+        for i in range(0,self.numSubsets):
             e = Entity( model=Mesh(),
-                        texture=this.textureAtlas)
+                        texture=self.textureAtlas)
             e.texture_scale*=64/e.texture.width
-            this.subsets.append(e)
+            self.subsets.append(e)
 
     # Highlight looked-at block :)
-    def update(this,pos,cam):
-        highlight(pos,cam,this.td)
+    def update(self,pos,cam):
+        highlight(pos,cam,self.td)
 
-    def input(this,key):
+    def input(self,key):
         if key=='left mouse up' and bte.visible==True:
-            epi = mine(this.td,this.vd,this.subsets)
+            epi = mine(self.td,self.vd,self.subsets)
             if epi != None:
-                this.genWalls(epi[0],epi[1])
-                this.subsets[epi[1]].model.generate()
+                self.genWalls(epi[0],epi[1])
+                self.subsets[epi[1]].model.generate()
 
     # I.e. after mining, to create illusion of depth.
-    def genWalls(this,epi,subset):
+    def genWalls(self,epi,subset):
         if epi==None: return
-        # Refactor this -- place in mining system
+        # Refactor self -- place in mining system
         # except for call to genBlock?
         wp =    [   Vec3(0,1,0),
                     Vec3(0,-1,0),
@@ -58,45 +58,45 @@ class MeshTerrain:
                     Vec3(0,0,1)]
         for i in range(0,6):
             np = epi +wp[i]
-            if this.td.get( 'x'+str(floor(np.x))+
+            if self.td.get( 'x'+str(floor(np.x))+
                             'y'+str(floor(np.y))+
                             'z'+str(floor(np.z)))==None:
-                this.genBlock(np.x,np.y,np.z,subset,gap=False,blockType='soil')
+                self.genBlock(np.x,np.y,np.z,subset,gap=False,blockType='soil')
         
-    def genBlock(this,x,y,z,subset=-1,gap=True,blockType='grass'):
-        if subset==-1: subset=this.currentSubset
+    def genBlock(self,x,y,z,subset=-1,gap=True,blockType='grass'):
+        if subset==-1: subset=self.currentSubset
         # Extend or add to the vertices of our model.
-        model = this.subsets[subset].model
+        model = self.subsets[subset].model
 
         model.vertices.extend([ Vec3(x,y,z) + v for v in 
-                                this.block.vertices])
+                                self.block.vertices])
 
 
-        this.td["x"+str(floor(x))+
+        self.td["x"+str(floor(x))+
                 "y"+str(floor(y))+
                 "z"+str(floor(z))] = "t"
-        # Also, record gap above this position to
+        # Also, record gap above self position to
         # correct for spawning walls after mining.
         if gap==True:
             key =   ("x"+str(floor(x))+
                     "y"+str(floor(y+1))+
                     "z"+str(floor(z)))
-            if this.td.get(key)==None:
-                this.td[key] = "g"
+            if self.td.get(key)==None:
+                self.td[key] = "g"
 
 
-        # Record subset index and first vertex of this block.
+        # Record subset index and first vertex of self block.
         vob = (subset, len(model.vertices)-37)
-        this.vd["x"+str(floor(x))+
+        self.vd["x"+str(floor(x))+
                 "y"+str(floor(y))+
                 "z"+str(floor(z))] = vob
 
         # Decide random tint for colour of block :)
         c = random()-0.5
         model.colors.extend( (Vec4(1-c,1-c,1-c,1),)*
-                                this.numVertices)
+                                self.numVertices)
 
-        # This is the texture atlas co-ord for grass :)
+        # self is the texture atlas co-ord for grass :)
         uu = 8
         uv = 7
         if blockType=='soil':
@@ -116,28 +116,28 @@ class MeshTerrain:
         if y > 2:
             uu = 8
             uv = 6
-        model.uvs.extend([Vec2(uu,uv) + u for u in this.block.uvs])
+        model.uvs.extend([Vec2(uu,uv) + u for u in self.block.uvs])
 
-    def genTerrain(this):
+    def genTerrain(self):
         # Get current position as we swirl around world.
-        x = floor(this.swirlEngine.pos.x)
-        z = floor(this.swirlEngine.pos.y)
+        x = floor(self.swirlEngine.pos.x)
+        z = floor(self.swirlEngine.pos.y)
 
-        d = int(this.subWidth*0.5)
+        d = int(self.subWidth*0.5)
 
         for k in range(-d,d):
             for j in range(-d,d):
 
-                y = floor(this.perlin.getHeight(x+k,z+j))
-                if this.td.get( "x"+str(floor(x+k))+
+                y = floor(self.perlin.getHeight(x+k,z+j))
+                if self.td.get( "x"+str(floor(x+k))+
                                 "y"+str(floor(y))+
                                 "z"+str(floor(z+j)))==None:
-                    this.genBlock(x+k,y,z+j)
+                    self.genBlock(x+k,y,z+j,blockType='ice')
 
-        this.subsets[this.currentSubset].model.generate()
+        self.subsets[self.currentSubset].model.generate()
         # Current subset hack ;)
-        if this.currentSubset<this.numSubsets-1:
-            this.currentSubset+=1
-        else: this.currentSubset=0
-        # this.currentSubset+=1
-        this.swirlEngine.move()
+        if self.currentSubset<self.numSubsets-1:
+            self.currentSubset+=1
+        else: self.currentSubset=0
+        # self.currentSubset+=1
+        self.swirlEngine.move()

@@ -1,48 +1,48 @@
 from ursina import Vec2
 
 class SwirlEngine:
-    def __init__(this,subWidth):
+    def __init__(self,subWidth):
         
-        this.subWidth = subWidth
+        self.subWidth = subWidth
 
         # Tracks position of terrain subset being generated.
-        this.pos = Vec2(0,0)
+        self.pos = Vec2(0,0)
 
-        this.reset(0,0)
+        self.reset(0,0)
 
-        this.dir = [Vec2(0,1),
+        self.dir = [Vec2(0,1),
                     Vec2(1,0),
                     Vec2(0,-1),
                     Vec2(-1,0)]
 
-    def changeDir(this):
-        if this.cd < 3:
-            this.cd+=1
+    def changeDir(self):
+        if self.cd < 3:
+            self.cd+=1
         else:
-            this.cd = 0
-            this.iteration+=1
+            self.cd = 0
+            self.iteration+=1
 
-        if this.cd < 2:
-            this.run = (this.iteration * 2) - 1
+        if self.cd < 2:
+            self.run = (self.iteration * 2) - 1
         else:
-            this.run = (this.iteration * 2)
+            self.run = (self.iteration * 2)
 
 
-    def move(this):
-        if this.count < this.run:
-            this.pos.x += this.dir[this.cd].x*this.subWidth
-            this.pos.y += this.dir[this.cd].y*this.subWidth
-            this.count+=1
+    def move(self):
+        if self.count < self.run:
+            self.pos.x += self.dir[self.cd].x*self.subWidth
+            self.pos.y += self.dir[self.cd].y*self.subWidth
+            self.count+=1
         else:
             # Time to change direction :)
-            this.count = 0
-            this.changeDir()
-            this.move()
+            self.count = 0
+            self.changeDir()
+            self.move()
 
-    def reset(this,x,z):
-        this.pos.x = x
-        this.pos.y = z
-        this.run = 1
-        this.iteration = 1
-        this.count = 0
-        this.cd = 0 # CUrrent direction (0-3)
+    def reset(self,x,z):
+        self.pos.x = x
+        self.pos.y = z
+        self.run = 1
+        self.iteration = 1
+        self.count = 0
+        self.cd = 0 # CUrrent direction (0-3)

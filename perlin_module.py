@@ -166,7 +166,7 @@ class RandVec(object):
             )
 
     def weight_to(self, coordinates: List[float]) -> float:
-        """Calculate this vector weights to given coordinates.
+        """Calculate self vector weights to given coordinates.
 
         Parameters:
             coordinates: Tuple[int] - target coordinates
