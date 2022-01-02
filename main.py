@@ -2,6 +2,7 @@ from ursina import *
 from ursina.prefabs.first_person_controller import FirstPersonController
 from mesh_terrain import MeshTerrain
 from flake import Flake
+from random import random
 
 app = Ursina()
 
@@ -18,6 +19,9 @@ flakes = []
 for i in range(512):
     e = Flake(subject.position)
     flakes.append(e)
+
+grass_audio = Audio('step.ogg',autoplay=False,loop=False)
+snow_audio = Audio('snowStep.mp3',autoplay=False,loop=False)
 
 pX = subject.x
 pZ = subject.z
@@ -43,10 +47,18 @@ def update():
         terrain.update(subject.position,camera)
 
     # Change subset position based on subject position.
-    if abs(subject.x - pX)>4 or abs(subject.z-pZ)>4:
+    if abs(subject.x - pX)>4 or abs(subject.z-pZ)>1:
         pX=subject.x
         pZ=subject.z
         terrain.swirlEngine.reset(pX,pZ)
+        # Sound :)
+        if subject.y > 4:
+            if snow_audio.playing==False:
+                snow_audio.pitch=random()+0.25
+                snow_audio.play()
+        elif grass_audio.playing==False:
+            grass_audio.pitch=random()+0.7
+            grass_audio.play()
 
     blockFound = False
     step = 2
